@@ -1,4 +1,4 @@
-"use client"; // Ensures this is a Client Component
+"use client"; // Marks this as a Client Component
 
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
@@ -40,7 +40,7 @@ const Header = () => {
           </SignedIn>
 
           <SignedOut>
-            <SignInButton forceRedirectUrl="/dashboard">
+            <SignInButton redirectUrl="/dashboard">
               <Button variant="outline">Login</Button>
             </SignInButton>
           </SignedOut>
