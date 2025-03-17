@@ -30,7 +30,6 @@ import { Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
 import ReciptScanner from './recipt-scanner';
-import{ AddTransactionPage} from '../create/page';
 const AddTransactionForm = ({  accounts,
     categories,
     editMode = false,
