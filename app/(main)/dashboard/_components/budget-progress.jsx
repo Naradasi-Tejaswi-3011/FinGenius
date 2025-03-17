@@ -1,5 +1,6 @@
 "use client";
-import { useState,useEffect } from "react";
+
+import { useState, useEffect } from "react";
 import { Pencil, Check, X } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
@@ -15,48 +16,56 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateBudget } from "@/actions/budget";
-const BudgetProgress = ({ initialBudget, currentExpenses }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [newBudget, setNewBudget] = useState(
-      initialBudget?.amount?.toString() || ""
-    );
-    const percentUsed = initialBudget
+
+export function BudgetProgress({ initialBudget, currentExpenses }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newBudget, setNewBudget] = useState(
+    initialBudget?.amount?.toString() || ""
+  );
+
+  const {
+    loading: isLoading,
+    fn: updateBudgetFn,
+    data: updatedBudget,
+    error,
+  } = useFetch(updateBudget);
+
+  const percentUsed = initialBudget
     ? (currentExpenses / initialBudget.amount) * 100
     : 0;
-    const {
-        loading: isLoading,
-        fn: updateBudgetFn,
-        data: updatedBudget,
-        error,
-      } = useFetch(updateBudget);
-      const handleUpdateBudget = async () => {
-        const amount = parseFloat(newBudget);
-    
-        if (isNaN(amount) || amount <= 0) {
-          toast.error("Please enter a valid amount");
-          return;
-        }
-    
-        await updateBudgetFn(amount);
-      };
-      useEffect(() => {
-        if (updatedBudget?.success) {
-          setIsEditing(false);
-          toast.success("Budget updated successfully");
-        }
-      }, [updatedBudget]);
-      useEffect(() => {
-        if (error) {
-          toast.error(error.message || "Failed to update budget");
-        }
-      }, [error]);
-    const handleCancel = () => {
-        setNewBudget(initialBudget?.amount?.toString() || "");
-        setIsEditing(false);
-      };
+
+  const handleUpdateBudget = async () => {
+    const amount = parseFloat(newBudget);
+
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    await updateBudgetFn(amount);
+  };
+
+  const handleCancel = () => {
+    setNewBudget(initialBudget?.amount?.toString() || "");
+    setIsEditing(false);
+  };
+
+  useEffect(() => {
+    if (updatedBudget?.success) {
+      setIsEditing(false);
+      toast.success("Budget updated successfully");
+    }
+  }, [updatedBudget]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to update budget");
+    }
+  }, [error]);
+
   return (
     <Card>
-     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex-1">
           <CardTitle className="text-sm font-medium">
             Monthly Budget (Default Account)
@@ -132,9 +141,6 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
           </div>
         )}
       </CardContent>
-</Card>
-
-  )
+    </Card>
+  );
 }
-
-export default BudgetProgress;
